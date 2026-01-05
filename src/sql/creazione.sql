@@ -265,7 +265,7 @@ CREATE TABLE num_telefono_agenzie (
                                       num_telefono VARCHAR(20) NOT NULL,
                                       id_agenzia INT UNSIGNED NOT NULL,
                                       PRIMARY KEY (prefisso,num_telefono),
-                                      CONSTRAINT fk_telefono_utente FOREIGN KEY (id_agenzia) REFERENCES utente(id)
+                                      CONSTRAINT fk_telefono_agenzie FOREIGN KEY (id_agenzia) REFERENCES utente(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
