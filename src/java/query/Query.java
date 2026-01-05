@@ -1,5 +1,10 @@
 package query;
 
-public interface Query {
-    void executeQuery();
+import java.sql.Connection;
+
+public interface Query{
+    void executeQuery(Connection conn);
+    default void executeQuery() {
+        executeQuery(null);
+    }
 }

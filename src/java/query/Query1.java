@@ -1,8 +1,11 @@
+// 1. Registrazione di una nuova prenotazione per un alloggio;
+
 package query;
 
 import dto.PrenotazioneDTO;
 import dao.PrenotazioneDAO;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -10,7 +13,7 @@ import java.util.Scanner;
 public class Query1 implements Query {
 
     @Override
-    public void executeQuery() {
+    public void executeQuery(Connection conn) {
         int numOspiti, sconto, idUtente, idAlloggio;
         LocalDate dataInizio, dataFine;
         float costoTotale;
