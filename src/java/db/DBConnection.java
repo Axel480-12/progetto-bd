@@ -11,7 +11,7 @@ public class DBConnection {
     private static final String URL =
             "jdbc:mysql://localhost:3306/gestionealloggi?serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = "3l3.MySQL";
+    private static final String PASSWORD = "3l3-MySQL";
 
     private DBConnection() throws SQLException {
         this.connection = DriverManager.getConnection(URL, USER, PASSWORD);
