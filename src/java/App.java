@@ -1,11 +1,20 @@
+import db.DBConnection;
 import query.Query;
 import query.QueryFactory;
-
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class App {
+    private static Connection conn = null;
     public static void main(String[] args) {
-
+        try {
+            conn = DBConnection.getInstance().getConnection();
+            System.out.println("✓ Connessione DB aperta");
+        } catch (Exception e) {
+            System.err.println(" Errore connessione: " + e.getMessage());
+            return;
+        }
         Scanner sc = new Scanner(System.in);
         int scelta;
 
@@ -16,13 +25,20 @@ public class App {
             Query query = QueryFactory.getQuery(scelta);
 
             if (query != null) {
-                query.executeQuery();
+                query.executeQuery(conn);
             } else if (scelta != 0) {
                 System.out.println("Scelta non valida.");
             }
 
         } while (scelta != 0);
-
+        try {
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+                System.out.println(" Connessione DB chiusa");
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore chiusura: " + e.getMessage());
+        }
         System.out.println("Uscita");
     }
 
