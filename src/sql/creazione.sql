@@ -391,51 +391,28 @@ CREATE TABLE aggiunta_esperienze (
 
 DELIMITER $$
 
-
 CREATE TRIGGER conferimento_before_insert
     BEFORE INSERT ON conferimento
     FOR EACH ROW
 BEGIN
-    -- 1) blocco tutti i professionisti
-    IF EXISTS (
-      SELECT 1
-      FROM host h
-      WHERE h.id = NEW.id_host
-        AND h.tipo_host = 'PROFESSIONISTA'
-   ) THEN
-      SIGNAL SQLSTATE '45000';
-END IF;
-
-
--- 2) se è privato, deve avere almeno una recensione con rating 5
-IF EXISTS (
-      SELECT 1
-      FROM host h
-      WHERE h.id = NEW.id_host
-        AND h.tipo_host = 'PRIVATO'
-   ) THEN
-
-
-      IF NOT EXISTS (
-         SELECT 1
-         FROM host h
-                JOIN alloggio a        ON a.id        = h.id_alloggio
-                JOIN assegnazione asg  ON asg.id_alloggio     = a.id
-                JOIN prenotazione p    ON p.id   = asg.id_prenotazione
-                JOIN recensione r      ON r.id_prenotazione   = p.id
-         WHERE h.id = NEW.id_host
-           AND (
-            r.rating_pulizia      = 5 OR
-            r.rating_qualita      = 5 OR
-            r.rating_disponiilita = 5 OR
-            r.rating_precisione   = 5
-         )
-      ) THEN
-         SIGNAL SQLSTATE '45000';
-END IF;
-
-
-END IF;
+    IF NOT EXISTS (
+        SELECT 1
+        FROM host h
+                 JOIN prenotazione p ON p.id_alloggio = h.id_alloggio
+                 JOIN recensione r ON r.id_prenotazione = p.id
+        WHERE h.id = NEW.id_host
+          AND h.tipo_host = 'PRIVATO'
+          AND (
+            r.rating_pulizia = 5 OR
+            r.rating_qualita = 5 OR
+            r.rating_disponibilita = 5 OR
+            r.rating_precisione = 5
+            )
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT =
+                    'Badge assegnabile solo a host privati con almeno una recensione a 5 stelle';
+    END IF;
 END$$
 
 
